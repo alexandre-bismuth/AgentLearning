@@ -1,58 +1,66 @@
-from agents import Agent
 from collections import deque
 import random
+import numpy as np
 
 
 class Queue:
-    def __init__(self, agents, prob_empty=0.1, init=3):
-        self.prob_empty = prob_empty
+    def __init__(self, agents, geo_param, init):
+        self.geo_param = geo_param
         self.queue = deque()
+        self.time_to_next_arrival = self.next_arrival_time()
         self.initialize_queue(agents, init)
+
+    def next_arrival_time(self):
+        return np.random.geometric(p=1 - self.geo_param)
 
     def initialize_queue(self, agents, init):
         weights = [agent.freq for agent in agents]
         for _ in range(init):
             new_agent = random.choices(agents, weights=weights, k=1)[0]
-            self.ajouter_agent(new_agent)
+            self.add_agent(new_agent)
 
-    def ajouter_agent(self, agent):
+    def add_agent(self, agent):
         self.queue.append(agent)
 
-    def retirer_agent(self):
+    def pull_agent(self):
         if self.queue:
             return self.queue.popleft()
         else:
             return None
 
-    def prochain_agent(self):
+    def next_agent(self):
         return self.queue[0] if self.queue else None
 
-    def arriver_nouvel_agent(self, agents):
-        if random.random() > self.prob_empty:
+    def new_agent_arrival(self, agents):
+        if self.time_to_next_arrival == 0:
             weights = [agent.freq for agent in agents]
             new_agent = random.choices(agents, weights=weights, k=1)[0]
-            self.ajouter_agent(new_agent)
+            self.add_agent(new_agent)
+            self.time_to_next_arrival = self.next_arrival_time()
+        else:
+            self.time_to_next_arrival -= 1
 
     def __repr__(self):
-        return f"FileAttente({list(self.queue)})"
+        return f"Waiting Line:({list(self.queue)})"
 
 
 class Counter:
     def __init__(self):
-        self.agent_actuel = None
+        self.current_agent = None
 
-    def remplacer_agent(self, agent):
-        ancien_agent = self.agent_actuel
-        self.agent_actuel = agent
-        return ancien_agent
+    def replace_agent(self, agent):
+        old_agent = self.current_agent
+        self.current_agent = agent
+        return old_agent
 
     def tour(self):
-        if self.agent_actuel:
-            if self.agent_actuel.quits():
-                reward = self.agent_actuel.reward
-                self.agent_actuel = None
+        if self.current_agent:
+            self.current_agent.decrement_time_to_quit()
+            if self.current_agent.is_quitting():
+                reward = self.current_agent.reward
+                self.current_agent = None
                 return reward
         return 0
 
     def __repr__(self):
-        return f"Comptoir(agent_actuel={self.agent_actuel})"
+        return f"Counter(current_agent={self.current_agent})"

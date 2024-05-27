@@ -1,7 +1,7 @@
+import tkinter as tk
 from agents import Agent
 from queueModel import Queue, Counter
 import random
-import numpy as np
 
 
 class Simulation:
@@ -67,12 +67,60 @@ class Simulation:
             return None
 
 
-# Exemple d'utilisation
-agents = [
-    Agent(1),
-    Agent(2),
-    Agent(3),
-]
+class SimulationApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Agent Simulation")
 
-simulation = Simulation(agents, geo_queue=0.2, init=5)
-simulation.run(10)
+        # Initialize agents
+        self.agents = [Agent(1), Agent(2), Agent(3)]
+        self.simulation = Simulation(self.agents, geo_queue=0.2, init=5)
+
+        self.create_widgets()
+        self.update_display()
+
+    def create_widgets(self):
+        # Create frames
+        self.queue_frame = tk.Frame(self.root)
+        self.queue_frame.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.counter_frame = tk.Frame(self.root)
+        self.counter_frame.pack(side=tk.RIGHT, padx=10, pady=10)
+
+        # Queue label and listbox
+        self.queue_label = tk.Label(self.queue_frame, text="Queue")
+        self.queue_label.pack()
+
+        self.queue_listbox = tk.Listbox(self.queue_frame)
+        self.queue_listbox.pack()
+
+        # Counter label and value
+        self.counter_label = tk.Label(self.counter_frame, text="Counter")
+        self.counter_label.pack()
+
+        self.counter_value = tk.Label(self.counter_frame, text="")
+        self.counter_value.pack()
+
+        # Buttons
+        self.next_step_button = tk.Button(
+            self.root, text="Next Step", command=self.next_step
+        )
+        self.next_step_button.pack()
+
+    def update_display(self):
+        self.queue_listbox.delete(0, tk.END)
+        for agent in self.simulation.wait_line.queue:
+            self.queue_listbox.insert(tk.END, str(agent))
+
+        current_agent = self.simulation.counter.current_agent
+        self.counter_value.config(text=str(current_agent) if current_agent else "None")
+
+    def next_step(self):
+        self.simulation.run(1)
+        self.update_display()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = SimulationApp(root)
+    root.mainloop()
