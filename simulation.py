@@ -7,9 +7,10 @@ class Agent:
         self.agent_type = agent_type
         self.service_prob = service_prob
         self.reward = reward
+        self.time_in_queue = 0
 
     def __str__(self):
-        return f"Agent {self.agent_type}"
+        return f"Agent {self.agent_type} ({self.time_in_queue})"
 
 
 class QueueSimulation:
@@ -36,6 +37,7 @@ class QueueSimulation:
         self.current_agent = None
         self.time = 0
         self.total_reward = 0
+        self.length = len(self.queue)
 
     def create_agent(self):
         agent_type = np.random.choice(
@@ -51,6 +53,10 @@ class QueueSimulation:
             if np.random.rand() < self.current_agent.service_prob:
                 self.total_reward += self.current_agent.reward
                 self.current_agent = None
+
+        # Increment time_in_queue for all agents in the queue
+        for agent in self.queue:
+            agent.time_in_queue += 1
 
         # Add new agent to the queue based on arrival probability
         if np.random.rand() < self.arrival_prob:
@@ -68,10 +74,10 @@ class QueueSimulation:
             )
             self.swap_agents(highest_priority_index)
 
-        # Here, we could also imagine adding a penalty (negative reward) for the length of the queue.
-        # This would help optimising the speed of service and limit the length of the queue.
+        self.length = len(self.queue)
 
     def get_queue_status(self):
+        self.length = len(self.queue)
         return [str(agent) for agent in self.queue]
 
     def get_current_agent(self):
@@ -111,12 +117,14 @@ class QueueSimulationGUI:
         self.queue_frame.pack(pady=10)
 
         self.queue_label = tk.Label(
-            self.queue_frame, text="Queue", font=("Helvetica", 14)
+            self.queue_frame,
+            text=f"Queue - Length: {self.simulation.length}",
+            font=("Helvetica", 14),
         )
         self.queue_label.pack()
 
         self.queue_canvas = tk.Canvas(
-            self.queue_frame, width=400, height=100, bg="white"
+            self.queue_frame, width=600, height=150, bg="white"
         )
         self.queue_canvas.pack()
 
@@ -193,14 +201,17 @@ class QueueSimulationGUI:
         self.reward_label.config(
             text=f"Total Reward: {self.simulation.get_total_reward()}"
         )
+        self.queue_label.config(
+            text=f"Queue - Length: {self.simulation.length}",
+        )
 
         # Update queue visualization
         self.queue_canvas.delete("all")
         for idx, agent in enumerate(self.simulation.queue):
             self.queue_canvas.create_rectangle(
-                10 + 70 * idx, 10, 60 + 70 * idx, 60, fill="lightblue"
+                10 + 110 * idx, 10, 100 + 110 * idx, 60, fill="lightblue"
             )
-            self.queue_canvas.create_text(35 + 70 * idx, 35, text=str(agent.agent_type))
+            self.queue_canvas.create_text(55 + 110 * idx, 35, text=str(agent))
 
         # Update counter visualization
         self.counter_canvas.delete("all")
