@@ -55,6 +55,9 @@ class QueueSimulation:
 
         self.time += 1
 
+        # Here, we could also imagine adding a penalty (negative reward) for the length of the queue.
+        # This would help optimising the speed of service and limit the length of the queue.
+
     def get_queue_status(self):
         return [str(agent) for agent in self.queue]
 
@@ -209,7 +212,10 @@ class QueueSimulationGUI:
 
 
 def main():
-    num_agent_types = 6  # Number of agent types
+    # Number of agent types
+    num_agent_types = 6
+
+    # Service probabilities for each type
     service_probs = [
         0.7,
         0.5,
@@ -217,9 +223,16 @@ def main():
         0.4,
         0.8,
         0.5,
-    ]  # Service probabilities for each type
+    ]
+
+    # Rewards for each type
+    # Can be uniform if we want to maximise speed of service
     rewards = [10, 20, 30, 20, 4, 50]  # Rewards for each type
-    arrival_prob = 0.7  # Probabilty that a new agent joins the queue
+
+    # Probabilty that a new agent joins the queue
+    arrival_prob = 0.7
+
+    # If someone joins the queue, distribution of agent types
     type_distribution = [
         0.3,
         0.15,
@@ -227,9 +240,12 @@ def main():
         0.1,
         0.2,
         0.05,
-    ]  # If someone joins the queue, distribution of agent types
-    nb_agents_in_queue = 5  # Number of agents in the queue at t = 0
+    ]
 
+    # Number of agents in the queue at t = 0
+    nb_agents_in_queue = 5
+
+    # Simulation execution
     simulation = QueueSimulation(
         num_agent_types,
         service_probs,
@@ -238,7 +254,6 @@ def main():
         type_distribution,
         nb_agents_in_queue,
     )
-
     root = tk.Tk()
     gui = QueueSimulationGUI(root, simulation)
     root.mainloop()
