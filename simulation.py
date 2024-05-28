@@ -21,6 +21,8 @@ class QueueSimulation:
         arrival_prob,
         type_distribution,
         k=4,
+        sim_mode="manual",
+        priority_list=None,
     ):
         self.num_agent_types = num_agent_types
         self.service_probs = service_probs
@@ -28,6 +30,8 @@ class QueueSimulation:
         self.arrival_prob = arrival_prob
         self.type_distribution = type_distribution
         self.k = k
+        self.sim_mode = sim_mode
+        self.priority_list = priority_list if priority_list is not None else []
         self.queue = [self.create_agent() for _ in range(k)]
         self.current_agent = None
         self.time = 0
@@ -54,6 +58,15 @@ class QueueSimulation:
             self.queue.append(new_agent)
 
         self.time += 1
+
+        # Automatic mode: select the highest priority agent from the queue
+        if self.sim_mode == "automatic" and self.queue:
+            # Find the highest priority agent in the queue
+            highest_priority_index = min(
+                range(len(self.queue)),
+                key=lambda i: self.priority_list.index(self.queue[i].agent_type),
+            )
+            self.swap_agents(highest_priority_index)
 
         # Here, we could also imagine adding a penalty (negative reward) for the length of the queue.
         # This would help optimising the speed of service and limit the length of the queue.
@@ -207,6 +220,8 @@ class QueueSimulationGUI:
             self.simulation.arrival_prob,
             self.simulation.type_distribution,
             self.simulation.k,
+            self.simulation.sim_mode,
+            self.simulation.priority_list,
         )
         self.update_labels()
 
@@ -230,7 +245,7 @@ def main():
     rewards = [10, 20, 30, 20, 4, 50]  # Rewards for each type
 
     # Probabilty that a new agent joins the queue
-    arrival_prob = 0.7
+    arrival_prob = 0.5
 
     # If someone joins the queue, distribution of agent types
     type_distribution = [
@@ -245,6 +260,10 @@ def main():
     # Number of agents in the queue at t = 0
     nb_agents_in_queue = 5
 
+    # Do we choose manually each time or do we setup a priority list ?
+    sim_mode = "automatic"  # "manual" or "automatic"
+    priority_list = [0, 1, 2, 3, 4, 5]
+
     # Simulation execution
     simulation = QueueSimulation(
         num_agent_types,
@@ -253,6 +272,8 @@ def main():
         arrival_prob,
         type_distribution,
         nb_agents_in_queue,
+        sim_mode,
+        priority_list,
     )
     root = tk.Tk()
     gui = QueueSimulationGUI(root, simulation)
