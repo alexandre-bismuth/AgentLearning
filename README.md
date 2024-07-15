@@ -6,7 +6,7 @@
 
 ### 1. Simulating a queue with agents to service
 
-In this first part of the project, we define a class for agents and a class for queue which will allow us to test multiple hand designed servicing strategies and to observe the total and discounted reward obtained from it after a large number of iterations. More details can be found on the QueueSimulation.ipynb notebook where the code is explained throughout.
+In this first part of the project, we define a class for agents and a class for queue which will allow us to test multiple hand designed servicing strategies and to observe the total and discounted reward obtained from it after a large number of iterations. More details can be found on the QueueSimulation.ipynb notebook where the code is explained throughout. To get a better comprehension of the overall system and implementation, running GUISimulation.ipynb will help, giving you a functional graphical interface which will allow you to play the simulation manually.
 
 ### 2. Developing a Reinforcement Learning Agent in order to find the best strategy through Q-Learning
 
