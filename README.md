@@ -17,3 +17,11 @@ In this second part of the project, we create a Q-Learning environment in order 
 Through testing, we can find which hyper-parameters are best in which kind of situation. These results are experimental findings which should serve as guidance and should not be considered as undeniable rules:
 
 - *\[TO BE DONE\]*
+
+## Next steps
+
+- Optimize code to improve training speed by looking for inefficiencies
+- Improve Q-table completeness by studying different method of trainings (i.e. variable truncation values)
+- Think about how to extrapolate results to unexplored states
+  - Convert Q_table into a priority list which is state-indepdendent
+  - Perform a Linear regression on the Q_table in order to expand Q_table values to a large amount of state (which requires us to suppose identical and constant/linear penalty functions)
