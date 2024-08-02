@@ -20,8 +20,8 @@ Through testing, we can find which hyper-parameters are best in which kinds of s
 
 ## Next steps
 
-- Optimize code to improve training speed by looking for inefficiencies
-- Improve Q-table completeness by studying different methods of training (i.e. variable truncation values)
-- Think about how to extrapolate results to unexplored states
-  - Convert Q_table into a priority list which is state-indepdendent
-  - Perform a Linear regression on the Q_table in order to expand Q_table values to a large amount of states (which requires us to suppose identical and constant/linear penalty functions)
+- [X] Optimize code to improve training speed by looking for inefficiencies
+- [X] Improve Q-table completeness by studying different methods of training (i.e. variable truncation values)
+- [ ] Think about how to extrapolate results to unexplored states
+  - [X] Convert Q_table into a priority list which is state-indepdendent
+  - [ ] Perform a Linear regression on the Q_table in order to expand Q_table values to a large amount of states (which requires us to suppose identical and constant/linear penalty functions)
