@@ -16,8 +16,6 @@ In this second part of the project, we create a Q-Learning environment in order 
 
 Through testing, we can find which hyper-parameters are best in which kinds of situation. These results are experimental findings which should serve as guidance and should not be considered as undeniable rules:
 
-- *\[TO BE DONE\]*
-
 ## Next steps
 
 - [X] Optimize code to improve training speed by looking for inefficiencies
